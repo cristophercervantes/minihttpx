@@ -24,31 +24,39 @@ It’s designed for reconnaissance on low-spec machines (small VMs, laptops, Ras
 
 ---
 
-## Limitations
-
-minihttpx is intentionally minimal. It does **not** (yet) provide:
-- Wappalyzer-style technology detection
-- TLS certificate details (expiry, issuer)
-- Favicon hashing, JARM, ASN/CDN lookups
-- Advanced request templating or raw request support
-- JSON/CSV output (unless added later)
-
-For in-depth fingerprinting and vulnerability scanning, prefer the original `httpx` and complementary tools like `nuclei`, `ffuf`, and `gobuster`.
-
----
-
 ## Install & Build
 
-You need Go installed (recommended >= 1.20).
+### Quick install using `go install`
 
-### From source
+If you have Go installed (1.20+), you can install `minihttpx` directly:
+
 ```bash
-unzip minihttpx_with_readme.zip -d minihttpx
+go install github.com/cristophercervantes/minihttpx/cmd/minihttpx@latest
+```
+
+This will place the `minihttpx` binary in your `$GOBIN` or `$GOPATH/bin`.
+
+Make sure it’s in your `PATH`, for example:
+
+```bash
+export PATH="$(go env GOPATH)/bin:$PATH"
+```
+
+Now you can run it from anywhere:
+
+```bash
+minihttpx -u example.com -sc -title
+```
+
+### Build from source
+
+Clone and build locally:
+
+```bash
+git clone https://github.com/cristophercervantes/minihttpx
 cd minihttpx
 go build -o minihttpx cmd/minihttpx/main.go
 ```
-
-The binary `minihttpx` will be produced in the current directory.
 
 ---
 
@@ -95,7 +103,7 @@ nuclei -l urls.txt -t vulnerabilities/
 ```
 
 3. **Parallel scanning on low-RAM machines**
-Use GNU `parallel` to distribute load (keeps each process lightweight):
+Use GNU `parallel` to distribute load:
 ```bash
 cat targets.txt | parallel -j 8 ./minihttpx -u {} -sc -title
 ```
@@ -110,19 +118,10 @@ Contributions are welcome. If you want features like JSON output, TLS info, or c
 
 ## License
 
-This project is provided as-is under the MIT License. See `LICENSE` in the repo for details.
+This project is provided as-is under the MIT License. See `LICENSE` for details.
 
 ---
 
 ## Safety & Legal
 
 Only scan systems you own or where you have explicit permission. Unauthorized scanning can be illegal and unethical.
-
----
-
-If you’d like, I can:
-- Add `-o` to save results to file (CSV/JSON)
-- Add simple concurrency (worker pool)
-- Add TLS certificate summary for HTTPS targets
-
-Tell me which features to add next.
